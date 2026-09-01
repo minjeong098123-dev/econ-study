@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>공지사항 · 경제소학회</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="notice" data-board="notice" data-mode="view">
+
+<header id="topbar"></header>
+<div id="banner" hidden></div>
+
+<main class="narrow">
+  <div class="btn-row actions">
+    <button type="button" class="btn" id="edit">수정</button>
+    <button type="button" class="btn danger" id="del">삭제</button>
+  </div>
+
+  <div class="card post">
+    <h1 id="title"></h1>
+    <div class="meta" id="date"></div>
+    <div class="body" id="body"></div>
+    <div class="attach" id="file-wrap" hidden>
+      <b>첨부파일</b><span id="file"></span>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="common.js"></script>
+<script src="store.js"></script>
+<script src="board.js"></script>
+</body>
+</html>

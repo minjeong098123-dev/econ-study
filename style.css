@@ -1,0 +1,421 @@
+/* 경제소학회 스터디 홈페이지
+   한국장학재단·코트라 같은 공공기관 사이트 느낌 —
+   흰 바탕, 진한 기관 파랑, 얇은 회색 선, 그림자 대신 테두리로 구분 */
+
+:root {
+  --bg: #f2f5f8;
+  --card: #fff;
+  --ink: #191f28;
+  --sub: #3d4551;
+  --muted: #6b7684;
+  --line: #dde3ea;
+  --line-strong: #c3ccd6;
+  --brand: #00539c;
+  --brand-dark: #013a6e;
+  --brand-soft: #eaf2fa;
+  --point: #c8402c;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+.muted { color: var(--muted); }
+
+/* ── 상단 메뉴 ──────────────────────────── */
+
+header#topbar {
+  display: flex;
+  align-items: stretch;
+  gap: 40px;
+  padding: 0 40px;
+  height: 68px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+#topbar .brand {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--brand);
+  letter-spacing: -.03em;
+  white-space: nowrap;
+}
+#topbar nav { display: flex; gap: 6px; }
+#topbar nav a {
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  color: var(--sub);
+  font-weight: 500;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+}
+#topbar nav a:hover { color: var(--brand); }
+/* 활성 항목을 밑줄로 표시하는 건 공공기관 사이트에서 흔한 방식입니다 */
+#topbar nav a.on { color: var(--brand); font-weight: 700; border-bottom-color: var(--brand); }
+
+/* ── 틀 ─────────────────────────────────── */
+
+main {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 30px 40px 80px;
+}
+/* 글을 읽고 쓰는 화면은 너무 넓으면 줄이 길어져 읽기 나빠져서 조금 좁힙니다 */
+main.narrow { max-width: 1280px; }
+
+#banner {
+  max-width: 1520px;
+  margin: 16px auto -6px;
+  padding: 12px 18px;
+  background: #fdf6e5;
+  border: 1px solid #e8d5a8;
+  border-radius: var(--radius);
+  color: #7a5a14;
+  font-size: 14px;
+}
+
+h1.page {
+  margin: 6px 0 20px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--ink);
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+.card h2 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+/* 제목 앞 색 막대 — 공공기관 사이트의 전형적인 소제목 표시 */
+.card h2::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 15px;
+  margin-right: 9px;
+  background: var(--brand);
+  vertical-align: -2px;
+}
+.card h2 .more { float: right; font-size: 13px; font-weight: 500; color: var(--muted); }
+.card h2 .more:hover { color: var(--brand); text-decoration: underline; }
+
+.split { display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px; align-items: start; }
+
+.empty { color: var(--muted); padding: 30px 4px; text-align: center; font-size: 14px; }
+
+/* ── 버튼 ───────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--card);
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.btn:hover { background: #eef2f6; border-color: var(--muted); }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 600; }
+.btn.primary:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
+.btn.danger { color: var(--point); border-color: #e3bdb6; }
+.btn.danger:hover { background: #fdf1ef; border-color: var(--point); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn-row { display: flex; gap: 8px; }
+.actions { margin-bottom: 18px; }
+
+/* ── 목록 ───────────────────────────────── */
+
+.toolbar { display: flex; gap: 8px; margin-bottom: 16px; }
+.toolbar input[type=search] {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--card);
+}
+.toolbar input[type=search]:focus { outline: 2px solid var(--brand-soft); border-color: var(--brand); }
+
+ul.list { list-style: none; margin: 0; padding: 0; }
+ul.list li { border-bottom: 1px solid var(--line); }
+ul.list li:last-child { border-bottom: 0; }
+ul.list a {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 14px 8px;
+}
+ul.list a:hover { background: var(--brand-soft); }
+ul.list a:hover .t { color: var(--brand); text-decoration: underline; }
+ul.list .t { flex: 1; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+ul.list .d { color: var(--muted); font-size: 13px; white-space: nowrap; }
+ul.list .tag {
+  font-size: 12px;
+  padding: 1px 8px;
+  border: 1px solid var(--brand-soft);
+  border-radius: 3px;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+/* ── 글 쓰기 폼 ─────────────────────────── */
+
+.form { display: grid; gap: 16px; }
+.row { display: grid; grid-template-columns: 84px 1fr; gap: 16px; align-items: start; }
+.row > label { padding-top: 9px; font-weight: 600; color: var(--sub); }
+.row .field { display: flex; gap: 8px; align-items: flex-start; }
+.row .field > :first-child { flex: 1; min-width: 0; }
+
+.form input[type=text], .form input[type=url], .form textarea, .form select {
+  width: 100%;
+  padding: 9px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--card);
+}
+.form textarea { min-height: 200px; resize: vertical; line-height: 1.7; }
+.form input:focus, .form textarea:focus, .form select:focus {
+  outline: 2px solid var(--brand-soft);
+  border-color: var(--brand);
+}
+/* 명단에 네 글자 이름이 들어와도 잘리지 않도록 최소폭만 줍니다. */
+.form select { flex: 0 0 auto; width: auto; min-width: 132px; }
+
+.file-box {
+  padding: 9px 13px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 4px;
+  background: #fafcfd;
+  color: var(--muted);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-box:hover { border-color: var(--brand); color: var(--ink); }
+.file-box.ready { color: var(--ink); border-style: solid; }
+.file-box.done { color: var(--brand); border-style: solid; border-color: var(--brand); background: var(--brand-soft); }
+
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* ── 글 보기 ────────────────────────────── */
+
+.post h1 { margin: 0 0 8px; font-size: 24px; font-weight: 700; letter-spacing: -.03em; }
+.post .meta { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+.post .body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 22px 2px;
+  border-top: 2px solid var(--ink);
+  min-height: 140px;
+}
+.post .attach {
+  border-top: 1px solid var(--line);
+  padding: 16px 2px;
+  font-size: 14px;
+  background: #fafcfd;
+  margin: 0 -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+.post .attach b { display: block; margin-bottom: 6px; font-size: 13px; color: var(--muted); font-weight: 600; }
+.file-link, .out-link { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; word-break: break-all; }
+
+/* ── 달력 ───────────────────────────────── */
+
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.cal-head strong { font-size: 17px; font-weight: 700; min-width: 132px; text-align: center; }
+.cal-nav {
+  width: 32px; height: 32px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--card);
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+  color: var(--sub);
+}
+.cal-nav:hover { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.cal-grid .dow {
+  background: #eef2f6;
+  padding: 9px 0;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--sub);
+}
+.cal-grid .dow.sun { color: #c0392b; }
+.cal-grid .dow.sat { color: #2c6fb5; }
+
+.cal-grid .day { background: var(--card); min-height: 98px; padding: 6px 7px 7px; }
+.cal-grid .day.out { background: #fafcfd; }
+.cal-grid .day.pick { cursor: pointer; }
+.cal-grid .day.pick:hover { background: var(--brand-soft); }
+.cal-grid .day .num { font-size: 13px; font-weight: 600; color: var(--sub); }
+.cal-grid .day.sun .num { color: #c0392b; }
+.cal-grid .day.sat .num { color: #2c6fb5; }
+.cal-grid .day.today .num {
+  background: var(--brand); color: #fff;
+  border-radius: 50%;
+  display: inline-block; width: 22px; height: 22px;
+  text-align: center; line-height: 22px;
+}
+.cal-grid .day.sel { box-shadow: inset 0 0 0 2px var(--brand); }
+
+.chips { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+.chip {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.6;
+  padding: 1px 6px;
+  border-left: 3px solid var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+a.chip:hover { background: var(--brand); color: #fff; }
+
+/* ── 주차 / 발표 배정 ───────────────────── */
+
+.topic {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  background: var(--card);
+}
+.topic > summary {
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+}
+.topic > summary::-webkit-details-marker { display: none; }
+.topic > summary:hover { background: var(--brand-soft); }
+.topic .who {
+  font-size: 12px;
+  padding: 1px 8px;
+  border-radius: 3px;
+  background: #eef2f6;
+  color: var(--sub);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.topic .name { flex: 1; font-weight: 500; }
+.topic .detail { padding: 0 14px 14px; border-top: 1px solid var(--line); background: #fafcfd; }
+.topic .detail p { white-space: pre-wrap; margin: 12px 0; }
+
+table.assign { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.assign th, table.assign td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+table.assign th { font-size: 12.5px; color: var(--sub); font-weight: 700; background: #eef2f6; }
+table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; }
+
+/* ── 일정표 ─────────────────────────────── */
+
+.todo { list-style: none; margin: 0; padding: 0; }
+.todo li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--line);
+}
+.todo li:last-child { border-bottom: 0; }
+/* 줄을 맞추려고 최소폭만 줍니다. 폰트가 바뀌어도 '19:30' 이 잘리지 않도록 고정폭은 피합니다. */
+.todo .time { font-size: 13px; color: var(--brand); font-weight: 700; min-width: 46px; flex: none; }
+.todo .txt { flex: 1; word-break: break-word; }
+.todo .del {
+  border: 0; background: none; cursor: pointer;
+  color: var(--muted); padding: 2px 7px; border-radius: 3px; font-size: 13px;
+}
+.todo .del:hover { background: #fdf1ef; color: var(--point); }
+
+.add-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.add-form select {
+  flex: none;
+  padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--card);
+}
+.add-form select:disabled { color: var(--muted); background: #eef2f6; }
+.add-form input[type=text] {
+  flex: 1; min-width: 150px;
+  padding: 8px 12px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--card);
+}
+
+/* ── 좁은 화면 ──────────────────────────── */
+
+@media (max-width: 1100px) {
+  main, #banner { padding-left: 24px; padding-right: 24px; }
+  header#topbar { padding: 0 24px; gap: 24px; }
+}
+
+@media (max-width: 900px) {
+  .split { grid-template-columns: 1fr; }
+  header#topbar { height: auto; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 18px; }
+  #topbar nav { flex-wrap: wrap; margin-left: -18px; }
+  #topbar nav a { padding: 8px 18px; border-bottom-width: 2px; }
+  main { padding: 22px 18px 60px; }
+  .row { grid-template-columns: 1fr; gap: 7px; }
+  .row > label { padding-top: 0; }
+  .two { grid-template-columns: 1fr; }
+  .cal-grid .day { min-height: 68px; }
+  .post .attach { margin: 0 -24px; }
+}

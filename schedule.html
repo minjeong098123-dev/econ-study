@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>일정표 · 경제소학회</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="schedule">
+
+<header id="topbar"></header>
+<div id="banner" hidden></div>
+
+<main>
+  <h1 class="page">일정표</h1>
+
+  <div class="split">
+    <section class="card">
+      <div id="cal"></div>
+    </section>
+
+    <section class="card day-panel">
+      <h2><span id="day-title"></span></h2>
+      <ul class="todo" id="todo"></ul>
+
+      <div class="add-form">
+        <select id="new-hour" aria-label="시"></select>
+        <select id="new-min" aria-label="분"></select>
+        <input type="text" id="new-title" placeholder="할 일을 입력하세요">
+        <button type="button" class="btn primary" id="add">추가</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="common.js"></script>
+<script src="store.js"></script>
+<script src="schedule.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "study",
+      "runtimeExecutable": "py",
+      "runtimeArgs": [
+        "-3", "-m", "http.server", "8000",
+        "--directory", "C:/Users/moria/OneDrive/문서/코딩/스터디 홈페이지"
+      ],
+      "port": 8000
+    }
+  ]
+}

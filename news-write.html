@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>뉴스스크랩 작성 · 경제소학회</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<!-- 작성 페이지에는 상단 메뉴를 넣지 않습니다 -->
+<body>
+
+<div id="banner" hidden></div>
+
+<main class="narrow">
+  <h1 class="page">뉴스스크랩</h1>
+  <p class="muted" id="when"></p>
+
+  <div class="card">
+    <div class="form">
+      <div class="row">
+        <label for="title">제목</label>
+        <div class="field">
+          <input type="text" id="title" placeholder="제목을 입력하세요">
+          <select id="author"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="memo">메모</label>
+        <div class="field"><textarea id="memo" placeholder="내용을 입력하세요"></textarea></div>
+      </div>
+
+      <div class="row">
+        <label for="t1">주제 1</label>
+        <div class="field">
+          <div class="two">
+            <input type="text" id="t1" placeholder="첫 번째 주제">
+            <input type="url" id="u1" placeholder="기사 링크 (https://)">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="t2">주제 2</label>
+        <div class="field">
+          <div class="two">
+            <input type="text" id="t2" placeholder="두 번째 주제">
+            <input type="url" id="u2" placeholder="기사 링크 (https://)">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label>파일</label>
+        <div class="field">
+          <div class="file-box" id="file-box"></div>
+          <button type="button" class="btn" id="upload">업로드</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <span></span>
+        <div class="btn-row">
+          <button type="button" class="btn primary" id="submit">작성하기</button>
+          <button type="button" class="btn" id="cancel">취소</button>
+        </div>
+      </div>
+    </div>
+
+    <input type="file" id="file-input" hidden>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="common.js"></script>
+<script src="store.js"></script>
+<script src="news-write.js"></script>
+</body>
+</html>
