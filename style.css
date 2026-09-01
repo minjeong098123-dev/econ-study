@@ -228,8 +228,6 @@ ul.list .tag {
 .file-box.ready { color: var(--ink); border-style: solid; }
 .file-box.done { color: var(--brand); border-style: solid; border-color: var(--brand); background: var(--brand-soft); }
 
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
 /* ── 글 보기 ────────────────────────────── */
 
 .post h1 { margin: 0 0 8px; font-size: 24px; font-weight: 700; letter-spacing: -.03em; }
@@ -334,16 +332,12 @@ a.chip:hover { background: var(--brand); color: #fff; }
   overflow: hidden;
   background: var(--card);
 }
-.topic > summary {
+.topic-row {
   padding: 12px 14px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 10px;
-  list-style: none;
 }
-.topic > summary::-webkit-details-marker { display: none; }
-.topic > summary:hover { background: var(--brand-soft); }
 .topic .who {
   font-size: 12px;
   padding: 1px 8px;
@@ -354,8 +348,7 @@ a.chip:hover { background: var(--brand); color: #fff; }
   white-space: nowrap;
 }
 .topic .name { flex: 1; font-weight: 500; }
-.topic .detail { padding: 0 14px 14px; border-top: 1px solid var(--line); background: #fafcfd; }
-.topic .detail p { white-space: pre-wrap; margin: 12px 0; }
+.week-file { margin-top: 12px; font-size: 14px; }
 
 table.assign { width: 100%; border-collapse: collapse; font-size: 14px; }
 table.assign th, table.assign td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; }
@@ -415,7 +408,6 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
   main { padding: 22px 18px 60px; }
   .row { grid-template-columns: 1fr; gap: 7px; }
   .row > label { padding-top: 0; }
-  .two { grid-template-columns: 1fr; }
   .cal-grid .day { min-height: 68px; }
   .post .attach { margin: 0 -24px; }
 }

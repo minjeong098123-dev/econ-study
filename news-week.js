@@ -63,7 +63,6 @@ boot(async () => {
           key: `${r.id}-${n}`,
           no: n,
           name: r[`t${n}`],
-          url: safeUrl(r[`u${n}`]),
           author: r.author,
           rowId: r.id,
         });
@@ -105,7 +104,7 @@ boot(async () => {
   }
 });
 
-/** 작성자별로 묶어서, 주제를 누르면 링크와 첨부파일이 펼쳐지게 */
+/** 작성자별로 묶어서 주제 두 개와 첨부파일을 보여 줍니다 */
 async function drawTopics(rows, topics) {
   const host = $('#topics');
   if (!rows.length) {
@@ -126,29 +125,24 @@ async function drawTopics(rows, topics) {
         ${r.memo ? `<p style="white-space:pre-wrap;margin:0 0 14px">${esc(r.memo)}</p>` : ''}
         ${mine.length
           ? mine.map((t) => `
-              <details class="topic">
-                <summary>
+              <div class="topic">
+                <div class="topic-row">
                   <span class="who">주제 ${t.no}</span>
                   <span class="name">${esc(t.name)}</span>
-                </summary>
-                <div class="detail">
-                  ${t.url
-                    ? `<p><a class="out-link" href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.url)}</a></p>`
-                    : '<p class="muted">링크가 없습니다.</p>'}
-                  <div data-file="${r.id}"></div>
                 </div>
-              </details>`).join('')
+              </div>`).join('')
           : '<div class="muted" style="font-size:14px">적어 둔 주제가 없습니다.</div>'}
+        ${r.file_id ? `<div class="week-file" data-file="${r.id}"></div>` : ''}
       </section>`;
   }).join('');
 
   // 첨부파일 링크는 저장소에서 꺼내와야 해서 그린 뒤에 채웁니다
   for (const r of rows) {
     if (!r.file_id) continue;
-    for (const slot of $$(`[data-file="${r.id}"]`)) {
-      const wrap = document.createElement('span');
-      await renderAttach(wrap, r);
-      slot.innerHTML = `<span class="muted" style="font-size:13px">첨부파일 · </span>${wrap.innerHTML}`;
-    }
+    const slot = $(`[data-file="${r.id}"]`);
+    if (!slot) continue;
+    const wrap = document.createElement('span');
+    await renderAttach(wrap, r);
+    slot.innerHTML = `<span class="muted">첨부파일 · </span>${wrap.innerHTML}`;
   }
 }

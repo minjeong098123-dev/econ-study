@@ -8,17 +8,15 @@ boot(async () => {
   $('#meta').textContent = `${row.author} · ${fmtDate(row.date)}`;
   $('#memo').textContent = row.memo || '';
 
-  const topics = [1, 2]
-    .map((n) => ({ name: row[`t${n}`], url: safeUrl(row[`u${n}`]) }))
-    .filter((t) => t.name);
+  const topics = [row.t1, row.t2].filter(Boolean);
 
   if (topics.length) {
     $('#topics-wrap').hidden = false;
-    $('#topics').innerHTML = topics.map((t) => `
-      <li><a ${t.url ? `href="${esc(t.url)}" target="_blank" rel="noopener"` : ''}>
-        <span class="t">${esc(t.name)}</span>
-        ${t.url ? '<span class="tag">기사</span>' : ''}
-      </a></li>`).join('');
+    $('#topics').innerHTML = topics
+      .map((name, i) => `
+        <li><a><span class="tag">주제 ${i + 1}</span>
+          <span class="t">${esc(name)}</span>
+        </a></li>`).join('');
   }
 
   if (row.file_id) {

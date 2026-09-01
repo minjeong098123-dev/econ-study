@@ -18,9 +18,7 @@ boot(async () => {
     $('#author').value = row.author || '';
     $('#memo').value = row.memo || '';
     $('#t1').value = row.t1 || '';
-    $('#u1').value = row.u1 || '';
     $('#t2').value = row.t2 || '';
-    $('#u2').value = row.u2 || '';
     $('#submit').textContent = '수정하기';
   }
 
@@ -37,11 +35,6 @@ boot(async () => {
     if (!title) return warn('제목을 적어 주세요.', '#title');
     if (!author) return warn('작성자를 골라 주세요.', '#author');
 
-    for (const sel of ['#u1', '#u2']) {
-      const v = $(sel).value.trim();
-      if (v && !safeUrl(v)) return warn('링크는 http:// 나 https:// 로 시작해야 합니다.', sel);
-    }
-
     $('#submit').disabled = true;
     const data = {
       date,
@@ -49,9 +42,7 @@ boot(async () => {
       author,
       memo: $('#memo').value,
       t1: $('#t1').value.trim(),
-      u1: $('#u1').value.trim(),
       t2: $('#t2').value.trim(),
-      u2: $('#u2').value.trim(),
       ...(await picker.save()),
     };
 

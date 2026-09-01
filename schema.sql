@@ -36,9 +36,7 @@ create table if not exists news (
   title      text not null,
   memo       text default '',
   t1         text default '',
-  u1         text default '',
   t2         text default '',
-  u2         text default '',
   file_id    text,
   file_name  text
 );
