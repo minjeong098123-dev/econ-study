@@ -6,7 +6,7 @@
 <title>경제소학회</title>
 <link rel="stylesheet" href="style.css">
 </head>
-<body data-page="home">
+<body data-page="home" data-fit>
 
 <header id="topbar"></header>
 <div id="banner" hidden></div>
@@ -18,10 +18,17 @@
       <div id="cal"></div>
     </section>
 
-    <section class="card">
-      <h2>공지사항<a class="more" href="notice.html">전체 보기 ›</a></h2>
-      <ul class="list" id="notices"></ul>
-    </section>
+    <div class="side">
+      <section class="card">
+        <h2>공지사항<a class="more" href="notice.html">전체 보기 ›</a></h2>
+        <ul class="list" id="notices"></ul>
+      </section>
+
+      <section class="card">
+        <h2>주차별 모아보기<a class="more" href="news.html">전체 보기 ›</a></h2>
+        <ul class="list" id="weeks"></ul>
+      </section>
+    </div>
   </div>
 </main>
 

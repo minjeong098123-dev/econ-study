@@ -59,6 +59,29 @@ function weekLabel(startStr) {
   return `${d.getMonth() + 1}월 ${Math.ceil(d.getDate() / 7)}주차`;
 }
 
+/** 스크랩들을 주차별로 묶어 최신순으로. [{ week, label, count }] */
+function weeksOf(rows) {
+  return [...new Set(rows.map((r) => weekStart(r.date)))]
+    .sort()
+    .reverse()
+    .map((w) => ({
+      week: w,
+      label: weekLabel(w),
+      count: rows.filter((r) => weekStart(r.date) === w).length,
+    }));
+}
+
+/** 주차 목록 한 덩어리. 시작화면과 뉴스스크랩이 같이 씁니다. */
+function weekListHtml(weeks) {
+  return weeks.length
+    ? weeks.map((w) => `
+        <li><a href="news-week.html?week=${w.week}">
+          <span class="t">${w.label}</span>
+          <span class="d">${w.count}개</span>
+        </a></li>`).join('')
+    : '<li class="empty">아직 올라온 스크랩이 없습니다.</li>';
+}
+
 /* ── 상단 메뉴 ──────────────────────────── */
 
 const MENU = [
@@ -82,6 +105,9 @@ function renderTopbar() {
 /* ── 달력 ───────────────────────────────── */
 
 const DOW = ['일', '월', '화', '수', '목', '금', '토'];
+
+/** 날짜 한 칸에 보여 줄 최대 개수. 넘치면 '+N' 으로 접습니다. */
+const MAX_CHIPS = 2;
 
 /**
  * 달력을 그립니다. 달 넘기기 버튼이 딸려 옵니다.
@@ -111,7 +137,11 @@ function calendar(el, opts = {}) {
     for (let d = 1; d <= days; d++) {
       const key = `${y}-${pad(m + 1)}-${pad(d)}`;
       const dow = (first + d - 1) % 7;
-      const chips = (marks[key] || []).map((c) =>
+      // 한 칸에 많이 몰려도 달력이 길어지지 않도록 두 개까지만 보이고,
+      // 나머지 개수는 날짜 옆에 '+N' 으로 붙입니다 (줄을 더 쓰지 않으려고)
+      const items = marks[key] || [];
+      const rest = items.length - MAX_CHIPS;
+      const chips = items.slice(0, MAX_CHIPS).map((c) =>
         c.href
           ? `<a class="chip" href="${c.href}">${esc(c.text)}</a>`
           : `<span class="chip">${esc(c.text)}</span>`).join('');
@@ -122,7 +152,9 @@ function calendar(el, opts = {}) {
       if (key === selected) cls.push('sel');
       if (opts.onPick) cls.push('pick');
       cells += `<div class="${cls.join(' ')}" data-date="${key}">
-        <span class="num">${d}</span><div class="chips">${chips}</div></div>`;
+        <div class="day-head"><span class="num">${d}</span>${
+          rest > 0 ? `<span class="more-n">+${rest}</span>` : ''}</div>
+        <div class="chips">${chips}</div></div>`;
     }
 
     // 마지막 줄이 중간에 끊기면 남은 칸이 배경색으로 비쳐서, 앞쪽처럼 빈 칸으로 채웁니다

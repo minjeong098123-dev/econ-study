@@ -18,14 +18,5 @@ boot(async () => {
   });
 
   // 그 주에 스크랩이 하나라도 올라오면 'n월 n주차'가 생깁니다
-  const weeks = [...new Set(rows.map((r) => weekStart(r.date)))].sort().reverse();
-  $('#weeks').innerHTML = weeks.length
-    ? weeks.map((w) => {
-        const n = rows.filter((r) => weekStart(w) === weekStart(r.date)).length;
-        return `<li><a href="news-week.html?week=${w}">
-          <span class="t">${weekLabel(w)}</span>
-          <span class="d">${n}개</span>
-        </a></li>`;
-      }).join('')
-    : '<li class="empty">아직 올라온 스크랩이 없습니다.</li>';
+  $('#weeks').innerHTML = weekListHtml(weeksOf(rows));
 });

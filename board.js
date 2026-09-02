@@ -12,35 +12,79 @@ const PAGE = {
 
 /* ── 목록 ───────────────────────────────── */
 
+/** 한 쪽에 보여 줄 글 개수 */
+const PER_PAGE = 10;
+
 async function initList() {
   const rows = await Store.list(BOARD);
   const box = $('#list');
   const q = $('#q');
+  let page = 1;
 
   function draw() {
     const key = q.value.trim().toLowerCase();
     const hit = key
-      ? rows.filter((r) =>
-          `${r.title} ${r.body}`.toLowerCase().includes(key))
+      ? rows.filter((r) => `${r.title} ${r.body}`.toLowerCase().includes(key))
       : rows;
+
+    const pages = Math.max(1, Math.ceil(hit.length / PER_PAGE));
+    if (page > pages) page = pages;
 
     if (!hit.length) {
       box.innerHTML = `<li class="empty">${
         key ? '찾는 글이 없습니다.' : '아직 올라온 글이 없습니다.'
       }</li>`;
+      $('#pager').innerHTML = '';
       return;
     }
-    box.innerHTML = hit.map((r) => `
-      <li><a href="${PAGE.view}?id=${r.id}">
-        <span class="t">${esc(r.title)}</span>
-        ${r.file_id || r.link ? '<span class="tag">첨부</span>' : ''}
-        <span class="d">${fmtDate(r.created_at)}</span>
-      </a></li>`).join('');
+
+    box.innerHTML = hit
+      .slice((page - 1) * PER_PAGE, page * PER_PAGE)
+      .map((r) => `
+        <li><a href="${PAGE.view}?id=${r.id}">
+          <span class="t">${esc(r.title)}</span>
+          ${r.file_id || r.link ? '<span class="tag">첨부</span>' : ''}
+          <span class="d">${fmtDate(r.created_at)}</span>
+        </a></li>`).join('');
+
+    drawPager(pages);
   }
 
-  $('#search').onclick = draw;
-  q.oninput = draw;
-  q.onkeydown = (e) => { if (e.key === 'Enter') draw(); };
+  function drawPager(pages) {
+    const el = $('#pager');
+    if (pages <= 1) {
+      el.innerHTML = '';
+      return;
+    }
+    const btn = (to, label, opts = '') =>
+      `<button type="button" class="pg${opts}" data-go="${to}">${label}</button>`;
+
+    el.innerHTML =
+      btn(page - 1, '‹ 이전', page === 1 ? ' off' : '') +
+      Array.from({ length: pages }, (_, i) =>
+        btn(i + 1, i + 1, i + 1 === page ? ' on' : '')).join('') +
+      btn(page + 1, '다음 ›', page === pages ? ' off' : '');
+
+    $$('.pg', el).forEach((b) => {
+      b.onclick = () => {
+        const to = Number(b.dataset.go);
+        if (to < 1 || to > pages || to === page) return;
+        page = to;
+        draw();
+        window.scrollTo({ top: 0 });
+      };
+    });
+  }
+
+  // 검색하면 늘 첫 쪽부터 봅니다
+  function search() {
+    page = 1;
+    draw();
+  }
+
+  $('#search').onclick = search;
+  q.oninput = search;
+  q.onkeydown = (e) => { if (e.key === 'Enter') search(); };
   $('#write').onclick = () => go(PAGE.write);
   draw();
 }
