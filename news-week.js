@@ -122,7 +122,7 @@ async function drawTopics(rows, topics) {
         <div class="muted" style="font-size:13px;margin:-8px 0 12px">
           ${esc(r.title)} · ${fmtDate(r.date)}
         </div>
-        ${r.memo ? `<p style="white-space:pre-wrap;margin:0 0 14px">${esc(r.memo)}</p>` : ''}
+        ${r.memo ? `<div class="week-memo" data-memo="${r.id}"></div>` : ''}
         ${mine.length
           ? mine.map((t) => `
               <div class="topic">
@@ -135,6 +135,12 @@ async function drawTopics(rows, topics) {
         ${r.file_id ? `<div class="week-file" data-file="${r.id}"></div>` : ''}
       </section>`;
   }).join('');
+
+  // 메모는 서식이 섞여 있어 걸러 낸 뒤에 넣습니다
+  for (const r of rows) {
+    const slot = $(`[data-memo="${r.id}"]`);
+    if (slot) renderBody(slot, r.memo);
+  }
 
   // 첨부파일 링크는 저장소에서 꺼내와야 해서 그린 뒤에 채웁니다
   for (const r of rows) {

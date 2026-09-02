@@ -6,7 +6,7 @@ boot(async () => {
 
   $('#title').textContent = row.title;
   $('#meta').textContent = `${row.author} · ${fmtDate(row.date)}`;
-  $('#memo').textContent = row.memo || '';
+  renderBody($('#memo'), row.memo);
 
   const topics = [row.t1, row.t2].filter(Boolean);
 

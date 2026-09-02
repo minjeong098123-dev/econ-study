@@ -52,11 +52,13 @@ const Store = {
     return check(await sb.from(table).upsert(row, { onConflict }).select().single());
   },
 
-  /** 글을 지우면 딸린 첨부파일도 같이 지웁니다. */
+  /** 글을 지우면 첨부파일과 글 안에 넣은 이미지도 같이 지웁니다. */
   async remove(table, id) {
     const row = await Store.get(table, id);
     check(await sb.from(table).delete().eq('id', id));
-    if (row && row.file_id) await Files.remove(row.file_id);
+    if (!row) return;
+    if (row.file_id) await Files.remove(row.file_id);
+    for (const path of pastedImages(row)) await Files.remove(path);
   },
 };
 
@@ -77,12 +79,25 @@ const Files = {
     if (path) await sb.storage.from(BUCKET).remove([path]);
   },
 
-  /** 공개 주소. download 를 붙이면 원래 이름으로 내려받힙니다. */
+  /**
+   * 공개 주소.
+   * 이름을 주면 그 이름으로 내려받고, 안 주면 그냥 여는 주소입니다.
+   * (글 안에 넣은 이미지는 내려받기가 아니라 보여야 하므로 이름 없이 부릅니다.)
+   */
   url(path, name) {
-    return sb.storage.from(BUCKET).getPublicUrl(path, { download: name || true })
-      .data.publicUrl;
+    return sb.storage.from(BUCKET)
+      .getPublicUrl(path, name ? { download: name } : undefined).data.publicUrl;
   },
 };
+
+/** 글 안에 붙여넣은 이미지들의 저장소 경로 */
+function pastedImages(row) {
+  const base = `${CFG.SUPABASE_URL}/storage/v1/object/public/${BUCKET}/`;
+  return [...`${row.body || ''}${row.memo || ''}`.matchAll(/src="([^"]+)"/g)]
+    .map((m) => m[1])
+    .filter((u) => u.startsWith(base))
+    .map((u) => decodeURIComponent(u.slice(base.length).split('?')[0]));
+}
 
 /** '첨부파일 · 이름' 한 줄. 첨부가 없으면 비웁니다. */
 async function renderAttach(el, row) {

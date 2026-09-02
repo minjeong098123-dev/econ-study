@@ -1,9 +1,8 @@
 /* 공지사항과 정보 공유는 구성이 같아서 이 파일 하나로 셋 다 맡습니다.
  * 페이지가 <body data-board="notice|info" data-mode="list|write|view"> 로 알려 줍니다.
- * 정보 공유에만 '링크' 칸이 하나 더 있습니다. */
+ * 두 게시판 모두 제목·내용·링크·파일을 씁니다. */
 
 const BOARD = document.body.dataset.board;
-const HAS_LINK = BOARD === 'info';
 const PAGE = {
   list: `${BOARD}.html`,
   write: `${BOARD}-write.html`,
@@ -96,10 +95,12 @@ async function initWrite() {
   const row = id ? await Store.get(BOARD, id) : null;
   if (id && !row) throw new Error('글을 찾을 수 없습니다.');
 
+  const editor = richEditor($('#body'));
+
   if (row) {
     $('#title').value = row.title || '';
-    $('#body').value = row.body || '';
-    if (HAS_LINK) $('#link').value = row.link || '';
+    editor.set(row.body);
+    $('#link').value = row.link || '';
     $('#submit').textContent = '수정하기';
   }
 
@@ -117,7 +118,7 @@ async function initWrite() {
       $('#title').focus();
       return;
     }
-    const link = HAS_LINK ? $('#link').value.trim() : '';
+    const link = $('#link').value.trim();
     if (link && !safeUrl(link)) {
       alert('링크는 http:// 나 https:// 로 시작해야 합니다.');
       $('#link').focus();
@@ -127,8 +128,8 @@ async function initWrite() {
     $('#submit').disabled = true;
     const data = {
       title,
-      body: $('#body').value,
-      ...(HAS_LINK ? { link } : {}),
+      body: editor.html(),
+      link,
       ...(await picker.save()),
     };
     if (row) {
@@ -153,9 +154,9 @@ async function initView() {
 
   $('#title').textContent = row.title;
   $('#date').textContent = fmtDate(row.created_at);
-  $('#body').textContent = row.body || '';
+  renderBody($('#body'), row.body);
 
-  const url = HAS_LINK && safeUrl(row.link);
+  const url = safeUrl(row.link);
   if (url) {
     $('#link-wrap').hidden = false;
     const a = $('#link');

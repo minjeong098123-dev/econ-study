@@ -267,6 +267,95 @@ function filePicker({ box, input, button, existing }) {
 
 /* ── 시작 ───────────────────────────────── */
 
+/* ── 서식 있는 내용 칸 ──────────────────── */
+
+/* 글 안에 남겨 둘 태그와 속성. 나머지는 모두 지웁니다.
+ * 로그인이 없는 사이트라 남이 넣은 서식을 그대로 실행하면 안 됩니다. */
+const OK_TAGS = new Set(
+  ['P', 'DIV', 'BR', 'B', 'STRONG', 'I', 'EM', 'U', 'SPAN', 'UL', 'OL', 'LI', 'A', 'IMG']);
+const OK_ATTR = { A: ['href'], IMG: ['src', 'alt'] };
+
+/** 위험한 것만 걷어내고 글자는 남깁니다. */
+function safeHtml(html) {
+  const doc = new DOMParser().parseFromString(`<body>${html || ''}</body>`, 'text/html');
+
+  function clean(el) {
+    [...el.children].forEach(clean); // 안쪽부터 정리해야 껍데기를 벗겨도 안전합니다
+
+    if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') {
+      el.remove();
+      return;
+    }
+    if (!OK_TAGS.has(el.tagName)) {
+      el.replaceWith(...el.childNodes); // 태그만 벗기고 글자는 남깁니다
+      return;
+    }
+    const allow = OK_ATTR[el.tagName] || [];
+    [...el.attributes].forEach((a) => {
+      const isUrl = a.name === 'href' || a.name === 'src';
+      if (!allow.includes(a.name) || (isUrl && !safeUrl(a.value))) el.removeAttribute(a.name);
+    });
+  }
+
+  [...doc.body.children].forEach(clean);
+  return doc.body.innerHTML;
+}
+
+/**
+ * 내용 칸. 글자와 이미지를 같이 담습니다.
+ * 붙여넣은 이미지는 곧바로 저장소에 올리고 커서 자리에 끼워 넣습니다.
+ */
+function richEditor(el) {
+  el.contentEditable = 'true';
+
+  el.addEventListener('paste', (e) => {
+    const items = [...((e.clipboardData && e.clipboardData.items) || [])];
+    const imgs = items.filter((i) => i.type.startsWith('image/'));
+    e.preventDefault();
+
+    if (!imgs.length) {
+      // 다른 사이트에서 복사한 서식이 딸려오지 않게 글자만 넣습니다
+      document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
+      return;
+    }
+
+    el.classList.add('busy');
+    (async () => {
+      try {
+        for (const it of imgs) {
+          const file = it.getAsFile();
+          if (!file) continue;
+          const { file_id } = await Files.put(file);
+          document.execCommand('insertHTML', false,
+            `<img src="${esc(Files.url(file_id))}" alt="">`);
+        }
+      } finally {
+        el.classList.remove('busy');
+      }
+    })();
+  });
+
+  return {
+    /** 비어 있으면 빈 글자를 줍니다. 브라우저가 남기는 <br> 만 있는 경우를 거릅니다. */
+    html() {
+      const empty = !el.textContent.trim() && !el.querySelector('img');
+      return empty ? '' : el.innerHTML.trim();
+    },
+    set(html) { el.innerHTML = safeHtml(html); },
+  };
+}
+
+/** 글 내용을 그립니다. 서식이 없던 옛 글도 그대로 보입니다. */
+function renderBody(el, text) {
+  if (/<[a-z][\s\S]*>/i.test(text || '')) {
+    el.innerHTML = safeHtml(text);
+    el.classList.add('rich');
+  } else {
+    el.textContent = text || '';
+    el.classList.remove('rich');
+  }
+}
+
 /**
  * 제목 옆 점 세 개 메뉴. 바깥을 누르거나 Esc 를 누르면 닫힙니다.
  * 안에 든 수정·삭제 버튼의 동작은 부르는 쪽에서 붙입니다.

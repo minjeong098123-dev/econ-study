@@ -207,6 +207,7 @@ ul.list .tag {
   background: var(--card);
 }
 .form textarea { min-height: 200px; resize: vertical; line-height: 1.7; }
+.post .body.rich { white-space: normal; }
 .form input:focus, .form textarea:focus, .form select:focus {
   outline: 2px solid var(--brand-soft);
   border-color: var(--brand);
@@ -562,3 +563,31 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
 }
 .menu-pop button:hover { background: var(--brand-soft); color: var(--brand); }
 .menu-pop button#del:hover { background: #fdf1ef; color: var(--point); }
+
+/* ── 이미지가 들어가는 내용 칸 ──────────── */
+
+.editor {
+  min-height: 200px;
+  max-height: 460px;
+  overflow-y: auto;
+  padding: 9px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--card);
+  line-height: 1.7;
+}
+.editor:focus { outline: 2px solid var(--brand-soft); border-color: var(--brand); }
+/* 비었을 때 안내 글 */
+.editor:empty::before {
+  content: attr(data-ph);
+  color: var(--muted);
+}
+.editor.busy { opacity: .6; }
+.editor img { max-width: 100%; height: auto; border-radius: 4px; margin: 6px 0; }
+
+/* 글에 넣은 이미지 */
+.rich img { max-width: 100%; height: auto; border-radius: 4px; margin: 8px 0; display: block; }
+.rich a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+
+.week-memo { margin: 0 0 14px; }
+.week-memo.rich img { max-width: 100%; }

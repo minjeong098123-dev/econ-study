@@ -13,10 +13,12 @@ boot(async () => {
     '<option value="">작성자</option>' +
     members().map((m) => `<option>${esc(m)}</option>`).join('');
 
+  const editor = richEditor($('#memo'));
+
   if (row) {
     $('#title').value = row.title || '';
     $('#author').value = row.author || '';
-    $('#memo').value = row.memo || '';
+    editor.set(row.memo);
     $('#t1').value = row.t1 || '';
     $('#t2').value = row.t2 || '';
     $('#submit').textContent = '수정하기';
@@ -40,7 +42,7 @@ boot(async () => {
       date,
       title,
       author,
-      memo: $('#memo').value,
+      memo: editor.html(),
       t1: $('#t1').value.trim(),
       t2: $('#t2').value.trim(),
       ...(await picker.save()),

@@ -14,9 +14,12 @@ create table if not exists notice (
   created_at timestamptz not null default now(),
   title      text not null,
   body       text default '',
+  link       text default '',
   file_id    text,
   file_name  text
 );
+-- 이미 만들어 둔 표에도 링크 칸을 붙입니다
+alter table notice add column if not exists link text default '';
 
 create table if not exists info (
   id         uuid primary key default gen_random_uuid(),
