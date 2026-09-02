@@ -132,11 +132,12 @@ async function initWrite() {
       ...(await picker.save()),
     };
     if (row) {
+      // 고칠 때는 보던 글로 돌아가고, 새로 쓸 때는 목록으로 갑니다
       await Store.update(BOARD, row.id, data);
       go(`${PAGE.view}?id=${row.id}`);
     } else {
-      const made = await Store.insert(BOARD, data);
-      go(`${PAGE.view}?id=${made.id}`);
+      await Store.insert(BOARD, data);
+      go(PAGE.list);
     }
   };
 
@@ -167,6 +168,7 @@ async function initView() {
     await renderAttach($('#file'), row);
   }
 
+  kebabMenu($('#menu-btn'), $('#menu-pop'));
   $('#edit').onclick = () => go(`${PAGE.write}?id=${row.id}`);
   $('#del').onclick = async () => {
     if (!confirm('이 글을 지울까요? 되돌릴 수 없습니다.')) return;

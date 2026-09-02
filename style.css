@@ -451,10 +451,14 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
     flex-direction: column;
     padding-bottom: 18px;
   }
-  body[data-fit] .split { flex: 1; min-height: 0; }
-  body[data-fit] .split > .card,
-  body[data-fit] .side > .card { max-height: 100%; display: flex; flex-direction: column; min-height: 0; }
-  body[data-fit] .side { max-height: 100%; grid-template-rows: auto auto; }
+  /* 칸이 남은 높이를 나눠 가지려면 카드부터 끝까지 늘어나야 합니다 */
+  body[data-fit] .split { flex: 1; min-height: 0; align-items: stretch; }
+  body[data-fit] .split > .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
   body[data-fit] .card > ul.list { overflow-y: auto; min-height: 0; }
 
   body[data-fit] #cal { flex: 1; display: flex; flex-direction: column; min-height: 0; }
@@ -465,3 +469,96 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
   body[data-fit] .day-panel .todo { flex: 1; min-height: 0; max-height: none; }
   body[data-fit] #weeks { max-height: none; }
 }
+
+/* ── 탭 목록 (시작화면 오른쪽) ──────────── */
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: -2px 0 4px;
+  border-bottom: 1px solid var(--line);
+}
+.tab {
+  position: relative;
+  padding: 4px 2px 9px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: -.02em;
+}
+.tab:hover { color: var(--sub); }
+.tab.on { color: var(--brand); }
+/* 고른 탭 아래에 굵은 밑줄 */
+.tab.on::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 3px;
+  background: var(--brand);
+}
+/* 탭 사이 가운뎃점 */
+.tab + .tab::before {
+  content: '·';
+  position: absolute;
+  left: -9px;
+  color: var(--line-strong);
+  font-weight: 400;
+}
+.tab-more {
+  margin-left: auto;
+  padding: 0 2px 6px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--muted);
+}
+.tab-more:hover { color: var(--brand); }
+
+/* ── 제목 옆 점 세 개 메뉴 ──────────────── */
+
+.post-head { display: flex; align-items: flex-start; gap: 10px; }
+.post-head h1 { flex: 1; min-width: 0; }
+
+.menu { position: relative; flex: none; }
+.kebab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.kebab svg { fill: currentColor; }
+.kebab:hover { background: #eef2f6; color: var(--ink); }
+
+.menu-pop {
+  position: absolute;
+  top: 34px; right: 0;
+  z-index: 20;
+  min-width: 104px;
+  padding: 4px;
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(25, 31, 40, .12);
+}
+.menu-pop button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--sub);
+}
+.menu-pop button:hover { background: var(--brand-soft); color: var(--brand); }
+.menu-pop button#del:hover { background: #fdf1ef; color: var(--point); }

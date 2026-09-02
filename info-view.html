@@ -12,13 +12,21 @@
 <div id="banner" hidden></div>
 
 <main class="narrow">
-  <div class="btn-row actions">
-    <button type="button" class="btn" id="edit">수정</button>
-    <button type="button" class="btn danger" id="del">삭제</button>
-  </div>
-
   <div class="card post">
-    <h1 id="title"></h1>
+    <div class="post-head">
+      <h1 id="title"></h1>
+      <div class="menu">
+        <button type="button" class="kebab" id="menu-btn" aria-label="더보기" aria-expanded="false">
+          <svg width="4" height="16" viewBox="0 0 4 16" aria-hidden="true">
+            <circle cx="2" cy="2.4" r="1.7"/><circle cx="2" cy="8" r="1.7"/><circle cx="2" cy="13.6" r="1.7"/>
+          </svg>
+        </button>
+        <div class="menu-pop" id="menu-pop" hidden>
+          <button type="button" id="edit">수정</button>
+          <button type="button" id="del">삭제</button>
+        </div>
+      </div>
+    </div>
     <div class="meta" id="date"></div>
     <div class="body" id="body"></div>
     <div class="attach" id="link-wrap" hidden>

@@ -47,11 +47,12 @@ boot(async () => {
     };
 
     if (row) {
+      // 고칠 때는 보던 글로 돌아가고, 새로 쓸 때는 목록으로 갑니다
       await Store.update('news', row.id, data);
       go(`news-view.html?id=${row.id}`);
     } else {
-      const made = await Store.insert('news', data);
-      go(`news-view.html?id=${made.id}`);
+      await Store.insert('news', data);
+      go('news.html');
     }
   };
 

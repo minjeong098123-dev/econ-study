@@ -267,6 +267,26 @@ function filePicker({ box, input, button, existing }) {
 
 /* ── 시작 ───────────────────────────────── */
 
+/**
+ * 제목 옆 점 세 개 메뉴. 바깥을 누르거나 Esc 를 누르면 닫힙니다.
+ * 안에 든 수정·삭제 버튼의 동작은 부르는 쪽에서 붙입니다.
+ */
+function kebabMenu(btn, pop) {
+  const close = () => {
+    pop.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+  };
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    const opening = pop.hidden;
+    pop.hidden = !opening;
+    btn.setAttribute('aria-expanded', String(opening));
+  };
+  pop.onclick = (e) => e.stopPropagation();
+  document.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+}
+
 function banner(msg) {
   const b = $('#banner');
   if (!b) return;

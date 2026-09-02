@@ -18,17 +18,15 @@
       <div id="cal"></div>
     </section>
 
-    <div class="side">
-      <section class="card">
-        <h2>공지사항<a class="more" href="notice.html">전체 보기 ›</a></h2>
-        <ul class="list" id="notices"></ul>
-      </section>
-
-      <section class="card">
-        <h2>주차별 모아보기<a class="more" href="news.html">전체 보기 ›</a></h2>
-        <ul class="list" id="weeks"></ul>
-      </section>
-    </div>
+    <section class="card">
+      <div class="tabs">
+        <button type="button" class="tab on" data-tab="news">뉴스스크랩</button>
+        <button type="button" class="tab" data-tab="notice">공지사항</button>
+        <button type="button" class="tab" data-tab="info">정보 공유</button>
+        <a class="tab-more" id="tab-more" href="news.html" aria-label="전체 보기">+</a>
+      </div>
+      <ul class="list" id="tab-list"></ul>
+    </section>
   </div>
 </main>
 

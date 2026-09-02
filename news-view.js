@@ -24,6 +24,7 @@ boot(async () => {
     await renderAttach($('#file'), row);
   }
 
+  kebabMenu($('#menu-btn'), $('#menu-pop'));
   $('#edit').onclick = () => go(`news-write.html?id=${row.id}`);
   $('#del').onclick = async () => {
     if (!confirm('이 스크랩을 지울까요? 되돌릴 수 없습니다.')) return;
