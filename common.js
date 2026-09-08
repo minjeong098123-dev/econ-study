@@ -14,8 +14,12 @@ function esc(s) {
 /** 주소창의 ?id=... 같은 값 */
 const param = (k) => new URLSearchParams(location.search).get(k);
 
+/* 스터디원 명단. 표에서 한 번 읽어 두고 여기에 담습니다.
+ * 페이지마다 boot() 이 채워 주므로 아래 members() 는 그냥 부르면 됩니다. */
+let MEMBER_NAMES = [];
+
 /** 늘 가나다순으로 */
-const members = () => [...(CFG.MEMBERS || [])].sort((a, b) => a.localeCompare(b, 'ko'));
+const members = () => [...MEMBER_NAMES].sort((a, b) => a.localeCompare(b, 'ko'));
 
 const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
@@ -44,6 +48,66 @@ function go(href) {
 
 /** 일정 정렬. 시간이 빈 '종일'은 휴대폰 일정표처럼 맨 위에 옵니다. */
 const byTime = (a, b) => (a.time || '').localeCompare(b.time || '');
+
+/** 반복 종류와 화면에 보일 이름 */
+const REPEATS = [
+  { key: '',          label: '반복 없음' },
+  { key: 'weekly',    label: '매주' },
+  { key: 'biweekly',  label: '2주마다' },
+  { key: 'monthly',   label: '매월' },
+];
+const repeatLabel = (key) => (REPEATS.find((r) => r.key === key) || REPEATS[0]).label;
+
+/** '이 날만 빼기'로 건너뛴 날짜들 */
+const skipsOf = (t) => (Array.isArray(t.skips) ? t.skips : []);
+
+/**
+ * 일정 하나를 실제 날짜 목록으로 펼칩니다.
+ * 반복이 없으면 그 날 하루뿐입니다. 빼 둔 날짜는 빠집니다.
+ *
+ * @param t     schedule 한 줄 (date, repeat, repeat_until, skips)
+ * @param from  'YYYY-MM-DD' 부터
+ * @param to    'YYYY-MM-DD' 까지
+ * @returns ['YYYY-MM-DD', ...]
+ */
+function occurrencesOf(t, from, to) {
+  const skip = new Set(skipsOf(t));
+  const keep = (s) => s >= from && s <= to && !skip.has(s);
+
+  if (!t.repeat) return keep(t.date) ? [t.date] : [];
+
+  const out = [];
+  const start = toDate(t.date);
+  const last = t.repeat_until && t.repeat_until < to ? t.repeat_until : to;
+  const step = { weekly: 7, biweekly: 14 }[t.repeat];
+
+  if (step) {
+    const d = new Date(start);
+    // 첫 날부터 한 칸씩 나아갑니다. 500번이면 몇 년치라 넉넉합니다.
+    for (let i = 0; i < 500 && ymd(d) <= last; i++) {
+      if (keep(ymd(d))) out.push(ymd(d));
+      d.setDate(d.getDate() + step);
+    }
+    return out;
+  }
+
+  // 매월: 날짜를 그대로 유지합니다. 그 달에 없는 날(31일 등)은 건너뜁니다.
+  const day = start.getDate();
+  for (let i = 0; i < 500; i++) {
+    const d = new Date(start.getFullYear(), start.getMonth() + i, day);
+    if (d.getDate() !== day) continue;
+    const s = ymd(d);
+    if (s > last) break;
+    if (keep(s)) out.push(s);
+  }
+  return out;
+}
+
+/** 원래는 이 날 있어야 하는데 '이 날만 빼기'로 쉬는 일정인가 */
+function isSkipped(t, date) {
+  return skipsOf(t).includes(date)
+    && occurrencesOf({ ...t, skips: [] }, date, date).length > 0;
+}
 
 /** 그 날짜가 속한 주의 일요일 */
 function weekStart(dateStr) {
@@ -100,7 +164,23 @@ function renderTopbar() {
   host.innerHTML =
     `<a class="brand" href="index.html">${esc(CFG.NAME || '스터디')}</a>` +
     `<nav>${MENU.map((m) =>
-      `<a href="${m.href}"${m.key === here ? ' class="on"' : ''}>${m.label}</a>`).join('')}</nav>`;
+      `<a href="${m.href}"${m.key === here ? ' class="on"' : ''}>${m.label}</a>`).join('')}</nav>` +
+    `<div class="menu gear-wrap">
+       <button type="button" class="gear${here === 'members' ? ' on' : ''}"
+               id="gear-btn" aria-label="설정" aria-expanded="false">
+         <svg width="19" height="19" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.9"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+           <circle cx="12" cy="12" r="3.2"/>
+           <path d="M19.5 12a7.6 7.6 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7.5 7.5 0 0 0-2-1.2L14.6 3H9.4l-.4 2.6a7.5 7.5 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7.5 7.5 0 0 0 2 1.2l.4 2.6h5.2l.4-2.6a7.5 7.5 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.07-.4.1-.8.1-1.2z"/>
+         </svg>
+       </button>
+       <div class="menu-pop" id="gear-pop" hidden>
+         <a href="members.html">명단 관리</a>
+       </div>
+     </div>`;
+
+  kebabMenu($('#gear-btn'), $('#gear-pop'));
 }
 
 /* ── 달력 ───────────────────────────────── */
@@ -129,7 +209,10 @@ function calendar(el, opts = {}) {
     const m = view.getMonth();
     const first = new Date(y, m, 1).getDay();
     const days = new Date(y, m + 1, 0).getDate();
-    const marks = (opts.marks && opts.marks()) || {};
+    // 반복 일정을 펼치려면 지금 보고 있는 달이 어디까지인지 알려 줘야 합니다
+    const from = `${y}-${pad(m + 1)}-01`;
+    const to = `${y}-${pad(m + 1)}-${pad(days)}`;
+    const marks = (opts.marks && opts.marks(from, to)) || {};
     const today = ymd(new Date());
 
     let cells = '';
@@ -418,7 +501,7 @@ function banner(msg) {
 }
 
 /**
- * 페이지 공통 시작 절차. 메뉴를 그리고 페이지별 초기화를 부릅니다.
+ * 페이지 공통 시작 절차. 메뉴를 그리고, 명단을 읽어 둔 뒤 페이지별 초기화를 부릅니다.
  * Supabase 주소와 키가 비어 있으면 안내만 띄우고 멈춥니다.
  */
 function boot(start) {
@@ -427,7 +510,10 @@ function boot(start) {
     banner('config.js 에 Supabase 주소와 anon key 를 넣으면 내용이 표시됩니다. (README 참고)');
     return;
   }
-  Promise.resolve(start()).catch((e) => {
+  (async () => {
+    MEMBER_NAMES = (await Store.list('member')).map((m) => m.name);
+    await start();
+  })().catch((e) => {
     console.error(e);
     const msg = (e && e.message) || String(e);
     banner(/Failed to fetch|NetworkError/i.test(msg)

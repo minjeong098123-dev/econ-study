@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>명단 관리 · 경제소학회</title>
+<link rel="stylesheet" href="style.css?v=7">
+</head>
+<body data-page="members">
+
+<header id="topbar"></header>
+<div id="banner" hidden></div>
+
+<main class="narrow">
+  <h1 class="page">명단 관리</h1>
+
+  <div class="card">
+    <h2>스터디원</h2>
+    <p class="muted note">
+      여기 있는 이름이 뉴스스크랩의 작성자와 회의록의 참석자로 나옵니다.
+      이름을 지워도 이미 올라간 글에 적힌 이름은 그대로 남습니다.
+    </p>
+
+    <ul class="list" id="list"></ul>
+
+    <div class="add-form">
+      <input type="text" id="new-name" placeholder="이름을 입력하세요">
+      <button type="button" class="btn primary" id="add">추가</button>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=7"></script>
+<script src="common.js?v=7"></script>
+<script src="store.js?v=7"></script>
+<script src="members.js?v=7"></script>
+</body>
+</html>

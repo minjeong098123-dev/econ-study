@@ -445,9 +445,17 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
  * 좁은 화면(휴대폰)에서는 평소처럼 스크롤됩니다.
  */
 @media (min-width: 901px) {
-  body[data-fit] { overflow: hidden; }
+  /* 높이를 숫자로 못 박으면 안내 문구가 떴을 때 그만큼 넘칩니다.
+     화면 전체를 세로로 쌓고 본문이 남는 만큼만 차지하게 둡니다. */
+  body[data-fit] {
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
   body[data-fit] main {
-    height: calc(100vh - 54px);
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     padding-bottom: 18px;
@@ -476,6 +484,7 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
 .tabs {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 14px;
   margin: -2px 0 4px;
   border-bottom: 1px solid var(--line);
@@ -540,7 +549,8 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
 
 .menu-pop {
   position: absolute;
-  top: 34px; right: 0;
+  top: 38px; right: 0;
+  white-space: nowrap;
   z-index: 20;
   min-width: 104px;
   padding: 4px;
@@ -549,7 +559,8 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
   border-radius: 4px;
   box-shadow: 0 6px 18px rgba(25, 31, 40, .12);
 }
-.menu-pop button {
+.menu-pop button,
+.menu-pop a {
   display: block;
   width: 100%;
   padding: 8px 12px;
@@ -561,7 +572,8 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
   font-size: 14px;
   color: var(--sub);
 }
-.menu-pop button:hover { background: var(--brand-soft); color: var(--brand); }
+.menu-pop button:hover,
+.menu-pop a:hover { background: var(--brand-soft); color: var(--brand); }
 .menu-pop button#del:hover { background: #fdf1ef; color: var(--point); }
 
 /* ── 이미지가 들어가는 내용 칸 ──────────── */
@@ -621,3 +633,57 @@ table.assign td.p { font-weight: 700; color: var(--brand); white-space: nowrap; 
   font-size: 13px;
   font-weight: 600;
 }
+
+/* ── 명단 관리 ──────────────────────────── */
+
+.gear-wrap { margin-left: auto; display: flex; align-items: center; }
+.gear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.gear:hover { background: #eef2f6; color: var(--brand); }
+.gear.on { color: var(--brand); background: var(--brand-soft); }
+
+.note { font-size: 13px; margin: -4px 0 12px; }
+
+li.member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 8px;
+}
+li.member .t { flex: 1; font-weight: 500; }
+li.member .del {
+  border: 0; background: none; cursor: pointer;
+  color: var(--muted); padding: 3px 9px; border-radius: 3px; font-size: 13px;
+}
+li.member .del:hover { background: #fdf1ef; color: var(--point); }
+li.member .del:disabled { opacity: .5; cursor: default; }
+
+/* 반복 일정 표시 */
+.todo .tag.rep {
+  margin-left: 7px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: #eef2f6;
+  color: var(--sub);
+  font-size: 11.5px;
+  font-weight: 600;
+  vertical-align: 1px;
+}
+.add-form input[type=date] {
+  flex: none;
+  padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--card);
+}
+
+/* '이 날만 빼기'로 쉬는 줄 */
+.todo li.resting .time,
+.todo li.resting .txt { color: var(--muted); text-decoration: line-through; }
+.todo li.resting .tag.rep { text-decoration: none; }

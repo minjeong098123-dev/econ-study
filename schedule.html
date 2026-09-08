@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>일정표 · 경제소학회</title>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body data-page="schedule" data-fit>
 
@@ -27,6 +27,8 @@
         <select id="new-hour" aria-label="시"></select>
         <select id="new-min" aria-label="분"></select>
         <input type="text" id="new-title" placeholder="할 일을 입력하세요">
+        <select id="new-repeat" aria-label="반복"></select>
+        <input type="date" id="new-until" aria-label="반복 끝나는 날" hidden>
         <button type="button" class="btn primary" id="add">추가</button>
       </div>
     </section>
@@ -34,9 +36,9 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=3"></script>
-<script src="common.js?v=3"></script>
-<script src="store.js?v=3"></script>
-<script src="schedule.js?v=3"></script>
+<script src="config.js?v=7"></script>
+<script src="common.js?v=7"></script>
+<script src="store.js?v=7"></script>
+<script src="schedule.js?v=7"></script>
 </body>
 </html>

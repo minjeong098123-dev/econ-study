@@ -1,7 +1,7 @@
 -- 경제소학회 스터디 홈페이지 — Supabase 설정
 --
 -- Supabase 대시보드 왼쪽 메뉴에서 SQL Editor 를 열고, 이 파일을 통째로 붙여넣은 뒤 Run 하세요.
--- 표 6개와 파일 저장소가 한 번에 만들어집니다. 여러 번 실행해도 괜찮습니다.
+-- 표 7개와 파일 저장소가 한 번에 만들어집니다. 여러 번 실행해도 괜찮습니다.
 --
 -- file_id 는 저장소에 올린 파일의 경로입니다. file_name 은 올릴 때의 원래 이름입니다.
 -- date/time 은 '2026-09-01', '19:30' 처럼 글자로 넣습니다.
@@ -44,13 +44,23 @@ create table if not exists news (
   file_name  text
 );
 
+-- repeat 는 '' | 'weekly' | 'biweekly' | 'monthly'.
+-- repeat_until 이 비어 있으면 끝없이 반복합니다.
+-- skips 는 '이 날만 빼기'로 건너뛴 날짜들입니다. 예: ["2026-09-15"]
 create table if not exists schedule (
-  id         uuid primary key default gen_random_uuid(),
-  created_at timestamptz not null default now(),
-  "date"     text not null,
-  "time"     text default '',
-  title      text not null
+  id           uuid primary key default gen_random_uuid(),
+  created_at   timestamptz not null default now(),
+  "date"       text not null,
+  "time"       text default '',
+  title        text not null,
+  repeat       text default '',
+  repeat_until text default '',
+  skips        jsonb not null default '[]'::jsonb
 );
+-- 이미 만들어 둔 표에도 반복 칸을 붙입니다
+alter table schedule add column if not exists repeat text default '';
+alter table schedule add column if not exists repeat_until text default '';
+alter table schedule add column if not exists skips jsonb not null default '[]'::jsonb;
 
 -- 주차별 발표자 배정 결과. map 은 { "주제키": "이름" } 모양입니다.
 create table if not exists presentation (
@@ -72,6 +82,18 @@ create table if not exists minutes (
   file_name  text
 );
 
+-- 스터디원 명단. 홈페이지의 '명단 관리' 화면에서 고칩니다.
+create table if not exists member (
+  id         uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  name       text not null unique
+);
+
+-- 처음 한 번만 채워 넣습니다 (이미 있으면 건너뜁니다)
+insert into member (name) values
+  ('김민정'), ('김민성'), ('김초원'), ('신기현'), ('곽병서')
+on conflict (name) do nothing;
+
 -- ── 권한 ────────────────────────────────────
 --
 -- 로그인 기능이 없어서, 주소를 아는 사람은 누구나 읽고 쓰고 지울 수 있습니다.
@@ -84,6 +106,7 @@ alter table news         enable row level security;
 alter table schedule     enable row level security;
 alter table presentation enable row level security;
 alter table minutes      enable row level security;
+alter table member       enable row level security;
 
 drop policy if exists "누구나" on notice;
 drop policy if exists "누구나" on info;
@@ -91,6 +114,7 @@ drop policy if exists "누구나" on news;
 drop policy if exists "누구나" on schedule;
 drop policy if exists "누구나" on presentation;
 drop policy if exists "누구나" on minutes;
+drop policy if exists "누구나" on member;
 
 create policy "누구나" on notice       for all to anon, authenticated using (true) with check (true);
 create policy "누구나" on info         for all to anon, authenticated using (true) with check (true);
@@ -98,6 +122,7 @@ create policy "누구나" on news         for all to anon, authenticated using (
 create policy "누구나" on schedule     for all to anon, authenticated using (true) with check (true);
 create policy "누구나" on presentation for all to anon, authenticated using (true) with check (true);
 create policy "누구나" on minutes      for all to anon, authenticated using (true) with check (true);
+create policy "누구나" on member       for all to anon, authenticated using (true) with check (true);
 
 -- ── 파일 저장소 ─────────────────────────────
 

@@ -4,21 +4,28 @@
 const HOME_ROWS = 10;
 
 boot(async () => {
-  const [tasks, notices, info, news] = await Promise.all([
+  const [tasks, notices, info, news, minutes] = await Promise.all([
     Store.list('schedule'),
     Store.list('notice'),
     Store.list('info'),
     Store.list('news'),
+    Store.list('minutes'),
   ]);
 
-  const marks = {};
-  [...tasks].sort(byTime).forEach((t) => {
-    (marks[t.date] ||= []).push({
-      text: t.time ? `${t.time} ${t.title}` : t.title,
+  // 반복 일정은 보고 있는 달 안의 날짜들로 펼쳐서 찍습니다
+  function marks(from, to) {
+    const m = {};
+    [...tasks].sort(byTime).forEach((t) => {
+      for (const date of occurrencesOf(t, from, to)) {
+        (m[date] ||= []).push({
+          text: t.time ? `${t.time} ${t.title}` : t.title,
+        });
+      }
     });
-  });
+    return m;
+  }
 
-  calendar($('#cal'), { marks: () => marks });
+  calendar($('#cal'), { marks });
 
   /** 제목과 날짜 한 줄짜리 목록 */
   function postList(rows, viewPage, empty) {
@@ -43,6 +50,17 @@ boot(async () => {
     info: {
       more: 'info.html',
       html: () => postList(info, 'info-view.html', '아직 올라온 글이 없습니다.'),
+    },
+    minutes: {
+      more: 'minutes.html',
+      // 회의록은 올린 날이 아니라 회의한 날짜를 보여 줍니다
+      html: () => (minutes.length
+        ? minutes.slice(0, HOME_ROWS).map((r) => `
+            <li><a href="minutes-view.html?id=${r.id}">
+              <span class="t">${esc(r.title)}</span>
+              <span class="d">${fmtDate(r.date)}</span>
+            </a></li>`).join('')
+        : '<li class="empty">아직 올라온 회의록이 없습니다.</li>'),
     },
   };
 
