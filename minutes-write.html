@@ -3,41 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>뉴스스크랩 작성 · 경제소학회</title>
+<title>회의록 작성 · 경제소학회</title>
 <link rel="stylesheet" href="style.css?v=3">
 </head>
 <!-- 작성 페이지에는 상단 메뉴를 넣지 않습니다 -->
-<body>
+<body data-mode="write">
 
 <div id="banner" hidden></div>
 
 <main class="narrow">
-  <h1 class="page">뉴스스크랩</h1>
-  <p class="muted" id="when"></p>
+  <h1 class="page">회의록</h1>
 
   <div class="card">
     <div class="form">
       <div class="row">
         <label for="title">제목</label>
+        <div class="field"><input type="text" id="title" placeholder="제목을 입력하세요"></div>
+      </div>
+
+      <div class="row">
+        <label for="date">회의 날짜</label>
+        <div class="field"><input type="date" id="date"></div>
+      </div>
+
+      <div class="row">
+        <label>참석자</label>
+        <div class="field"><div class="checks" id="attendees"></div></div>
+      </div>
+
+      <div class="row">
+        <label for="body">내용</label>
         <div class="field">
-          <input type="text" id="title" placeholder="제목을 입력하세요">
-          <select id="author"></select>
+          <div class="editor" id="body" data-ph="회의 내용을 입력하세요 (이미지는 Ctrl+V 로 붙여넣기)"></div>
         </div>
-      </div>
-
-      <div class="row">
-        <label for="memo">메모</label>
-        <div class="field"><div class="editor" id="memo" data-ph="내용을 입력하세요 (이미지는 Ctrl+V 로 붙여넣기)"></div></div>
-      </div>
-
-      <div class="row">
-        <label for="t1">주제 1</label>
-        <div class="field"><input type="text" id="t1" placeholder="첫 번째 주제"></div>
-      </div>
-
-      <div class="row">
-        <label for="t2">주제 2</label>
-        <div class="field"><input type="text" id="t2" placeholder="두 번째 주제"></div>
       </div>
 
       <div class="row">
@@ -65,6 +63,6 @@
 <script src="config.js?v=3"></script>
 <script src="common.js?v=3"></script>
 <script src="store.js?v=3"></script>
-<script src="news-write.js?v=3"></script>
+<script src="minutes.js?v=3"></script>
 </body>
 </html>

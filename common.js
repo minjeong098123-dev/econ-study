@@ -89,6 +89,7 @@ const MENU = [
   { key: 'info',     href: 'info.html',     label: '정보 공유' },
   { key: 'schedule', href: 'schedule.html', label: '일정표' },
   { key: 'news',     href: 'news.html',     label: '뉴스스크랩' },
+  { key: 'minutes',  href: 'minutes.html',  label: '회의록' },
 ];
 
 /** 작성 페이지에는 #topbar 가 없습니다. 그럴 땐 아무 일도 하지 않습니다. */
@@ -266,6 +267,39 @@ function filePicker({ box, input, button, existing }) {
 }
 
 /* ── 시작 ───────────────────────────────── */
+
+/* ── 페이지 넘기기 ─────────────────────── */
+
+/** 한 쪽에 보여 줄 글 개수 */
+const PER_PAGE = 10;
+
+/**
+ * 쪽 번호 단추들. 누르면 onGo(쪽번호) 를 부릅니다.
+ * 한 쪽뿐이면 아무것도 그리지 않습니다.
+ */
+function renderPager(el, page, pages, onGo) {
+  if (pages <= 1) {
+    el.innerHTML = '';
+    return;
+  }
+  const btn = (to, label, cls = '') =>
+    `<button type="button" class="pg${cls}" data-go="${to}">${label}</button>`;
+
+  el.innerHTML =
+    btn(page - 1, '‹ 이전', page === 1 ? ' off' : '') +
+    Array.from({ length: pages }, (_, i) =>
+      btn(i + 1, i + 1, i + 1 === page ? ' on' : '')).join('') +
+    btn(page + 1, '다음 ›', page === pages ? ' off' : '');
+
+  $$('.pg', el).forEach((b) => {
+    b.onclick = () => {
+      const to = Number(b.dataset.go);
+      if (to < 1 || to > pages || to === page) return;
+      onGo(to);
+      window.scrollTo({ top: 0 });
+    };
+  });
+}
 
 /* ── 서식 있는 내용 칸 ──────────────────── */
 

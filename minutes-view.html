@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>정보 공유 · 경제소학회</title>
+<title>회의록 · 경제소학회</title>
 <link rel="stylesheet" href="style.css?v=3">
 </head>
-<body data-page="info" data-board="info" data-mode="view">
+<body data-page="minutes" data-mode="view">
 
 <header id="topbar"></header>
 <div id="banner" hidden></div>
@@ -27,11 +27,14 @@
         </div>
       </div>
     </div>
-    <div class="meta" id="date"></div>
+    <div class="meta" id="meta"></div>
     <div class="body" id="body"></div>
-    <div class="attach" id="link-wrap" hidden>
-      <b>링크</b><a class="out-link" id="link" target="_blank" rel="noopener"></a>
+
+    <div class="attach" id="attendees-wrap" hidden>
+      <b>참석자</b>
+      <div class="who-row" id="attendees"></div>
     </div>
+
     <div class="attach" id="file-wrap" hidden>
       <b>첨부파일</b><span id="file"></span>
     </div>
@@ -42,6 +45,6 @@
 <script src="config.js?v=3"></script>
 <script src="common.js?v=3"></script>
 <script src="store.js?v=3"></script>
-<script src="board.js?v=3"></script>
+<script src="minutes.js?v=3"></script>
 </body>
 </html>

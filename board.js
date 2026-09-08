@@ -11,9 +11,6 @@ const PAGE = {
 
 /* ── 목록 ───────────────────────────────── */
 
-/** 한 쪽에 보여 줄 글 개수 */
-const PER_PAGE = 10;
-
 async function initList() {
   const rows = await Store.list(BOARD);
   const box = $('#list');
@@ -46,33 +43,7 @@ async function initList() {
           <span class="d">${fmtDate(r.created_at)}</span>
         </a></li>`).join('');
 
-    drawPager(pages);
-  }
-
-  function drawPager(pages) {
-    const el = $('#pager');
-    if (pages <= 1) {
-      el.innerHTML = '';
-      return;
-    }
-    const btn = (to, label, opts = '') =>
-      `<button type="button" class="pg${opts}" data-go="${to}">${label}</button>`;
-
-    el.innerHTML =
-      btn(page - 1, '‹ 이전', page === 1 ? ' off' : '') +
-      Array.from({ length: pages }, (_, i) =>
-        btn(i + 1, i + 1, i + 1 === page ? ' on' : '')).join('') +
-      btn(page + 1, '다음 ›', page === pages ? ' off' : '');
-
-    $$('.pg', el).forEach((b) => {
-      b.onclick = () => {
-        const to = Number(b.dataset.go);
-        if (to < 1 || to > pages || to === page) return;
-        page = to;
-        draw();
-        window.scrollTo({ top: 0 });
-      };
-    });
+    renderPager($('#pager'), page, pages, (to) => { page = to; draw(); });
   }
 
   // 검색하면 늘 첫 쪽부터 봅니다
