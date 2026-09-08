@@ -511,7 +511,13 @@ function boot(start) {
     return;
   }
   (async () => {
-    MEMBER_NAMES = (await Store.list('member')).map((m) => m.name);
+    // 명단을 못 읽어도 화면은 떠야 합니다.
+    // 이름 고르는 칸만 비고 나머지는 그대로 쓸 수 있게 둡니다.
+    try {
+      MEMBER_NAMES = (await Store.list('member')).map((m) => m.name);
+    } catch (e) {
+      console.error('명단을 읽지 못했습니다.', e);
+    }
     await start();
   })().catch((e) => {
     console.error(e);
